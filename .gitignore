@@ -1,9 +1,13 @@
 HELP.md
 target/
+.mvn/
+out/
 !.mvn/wrapper/maven-wrapper.jar
 !**/src/main/**/target/
 !**/src/test/**/target/
 application.properties
+mvnw
+mvnw.cmd
 
 ### STS ###
 .apt_generated
@@ -14,6 +18,7 @@ application.properties
 .springBeans
 .sts4-cache
 *.jar
+
 
 ### IntelliJ IDEA ###
 .idea
