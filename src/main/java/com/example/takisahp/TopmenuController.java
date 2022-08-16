@@ -5,7 +5,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 
 @Controller
 public class TopmenuController {
-    @GetMapping("topmenu")
+    @GetMapping("/")
     public String indexView(){
         return "topmenu";
     }
@@ -15,3 +15,4 @@ public class TopmenuController {
         return "profile";
     }
 }
+
