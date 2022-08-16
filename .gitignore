@@ -8,7 +8,6 @@ out/
 application.properties
 mvnw
 mvnw.cmd
-te
 
 ### STS ###
 .apt_generated
