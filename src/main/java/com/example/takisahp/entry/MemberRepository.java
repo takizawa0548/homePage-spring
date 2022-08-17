@@ -1,7 +1,7 @@
 package com.example.takisahp.entry;
 
-import org.springframework.data.repository.CrudRepository;
+import org.springframework.data.jpa.repository.JpaRepository;
 
-public interface MemberRepository extends CrudRepository<Member,Integer> {
+public interface MemberRepository extends JpaRepository<Member,Integer> {
 
 }

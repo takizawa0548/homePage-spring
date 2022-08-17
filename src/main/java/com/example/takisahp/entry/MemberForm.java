@@ -1,22 +1,19 @@
 package com.example.takisahp.entry;
 
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.validation.constraints.NotBlank;
 
-
-@Entity
-@Table(name="member")
-@Getter
-@Setter
+@Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class Member {
-    @Id
+public class MemberForm {
+
     private Integer id;
     //名前
+    @NotBlank
     private String name;
     //性別
     private String sex;
@@ -28,5 +25,4 @@ public class Member {
     private String email;
     //国籍
     private String nationality;
-
 }

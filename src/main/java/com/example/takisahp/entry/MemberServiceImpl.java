@@ -1,21 +1,25 @@
 package com.example.takisahp.entry;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Primary;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import com.example.takisahp.entry.MemberRepository;
 
 import java.util.Optional;
 
 @Service
+@Primary
 @Transactional
 public class MemberServiceImpl implements MemberService{
 
     @Autowired
-    MemberRepository repository;
+    private MemberRepository repository;
 
     @Override
     public Iterable<Member> selectAll() {
-        return repository.findAll();
+        return repository.findAll(Sort.by(Sort.Direction.ASC, "id"));
     }
 
     @Override
