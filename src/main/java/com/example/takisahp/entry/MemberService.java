@@ -8,9 +8,11 @@ public interface MemberService {
 
     Optional<Member> selectOneById(Integer id);
 
-    void insertMember(Member member);
-
-    void updateMember(Member member);
+    void saveMember(Member member);
 
     void deleteMember(Integer id);
+
+    long count();
+
+    boolean existsById(Integer id);
 }

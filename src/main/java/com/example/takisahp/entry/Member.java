@@ -1,10 +1,10 @@
 package com.example.takisahp.entry;
 
 import lombok.*;
+import org.springframework.format.annotation.DateTimeFormat;
 
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
+import java.util.Date;
 
 
 @Entity
@@ -15,13 +15,14 @@ import javax.persistence.Table;
 @AllArgsConstructor
 public class Member {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
     //名前
     private String name;
     //性別
-    private String sex;
+    private String gender;
     //誕生日
-    private String birthdate;
+    private Date birthdate;
     //電話番号
     private String phonenumber;
     //Eメール

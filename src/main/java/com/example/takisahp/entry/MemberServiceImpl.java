@@ -28,12 +28,7 @@ public class MemberServiceImpl implements MemberService{
     }
 
     @Override
-    public void insertMember(Member member) {
-        repository.save(member);
-    }
-
-    @Override
-    public void updateMember(Member member) {
+    public void saveMember(Member member) {
         repository.save(member);
     }
 
@@ -41,4 +36,10 @@ public class MemberServiceImpl implements MemberService{
     public void deleteMember(Integer id) {
         repository.deleteById(id);
     }
+
+    @Override
+    public long count(){ return repository.count();};
+
+    @Override
+    public boolean existsById(Integer id){return repository.existsById(id);};
 }

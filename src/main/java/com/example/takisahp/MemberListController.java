@@ -6,6 +6,9 @@ import com.example.takisahp.entry.MemberService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.ObjectError;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -22,56 +25,92 @@ public class MemberListController {
     MemberService service;
 
     @GetMapping
-    public String showList(Member member, Model model){
+    public String showList(Member member, Model model) {
         Iterable<Member> list = service.selectAll();
-        model.addAttribute("list",list);
+        model.addAttribute("list", list);
         return "memberList/memberTop";
     }
 
     @PostMapping("delete")
-    public String deleteOne(@RequestParam("id") Integer id, Model model, RedirectAttributes redirectAttributes){
+    public String deleteOne(@RequestParam("id") Integer id, Model model, RedirectAttributes redirectAttributes) {
 
         service.deleteMember(id);
         return "redirect:/member";
     }
 
     @PostMapping("edit")
-    public String editOne(MemberForm memberForm,@RequestParam("id") Integer id, Model model){
+    public String editOne(MemberForm memberForm, Model model) {
 
-        if(id.equals(0)){
-            model.addAttribute("id","-");
-            model.addAttribute("title","登録");
-            model.addAttribute("buttonName","登録");
+        Integer idCheck = memberForm.getId();
+        if (idCheck == null) {
+            model.addAttribute("title", "登録");
+            model.addAttribute("buttonName", "登録");
             return "memberList/memberEdit";
         }
 
-        Optional<Member> memberOpt = service.selectOneById(id);
-        Optional<MemberForm> memberFormOpt = memberOpt.map(t->makeMemberForm(t));
+        Optional<Member> memberOpt = service.selectOneById(memberForm.getId());
+        Optional<MemberForm> memberFormOpt = memberOpt.map(t -> makeMemberForm(t));
 
-        if(memberFormOpt.isPresent()){
+        if (memberFormOpt.isPresent()) {
             memberForm = memberFormOpt.get();
         }
-        makeUpdateModel(memberForm,model);
+
+        model.addAttribute("title", "更新");
+        model.addAttribute("buttonName", "更新");
+        model.addAttribute("memberForm", memberForm);
         return "memberList/memberEdit";
     }
 
-    private MemberForm makeMemberForm(Member member){
+    private MemberForm makeMemberForm(Member member) {
         MemberForm form = new MemberForm();
         form.setId(member.getId());
         form.setName(member.getName());
         form.setBirthdate(member.getBirthdate());
         form.setEmail(member.getEmail());
-        form.setSex(member.getSex());
+        form.setGender(member.getGender());
         form.setNationality(member.getNationality());
         form.setPhonenumber(member.getPhonenumber());
         return form;
     }
 
-    private void makeUpdateModel(MemberForm memberForm, Model model){
-        model.addAttribute("id",memberForm.getId());
-        model.addAttribute("title","更新");
-        model.addAttribute("buttonName","更新");
-        model.addAttribute("memberForm",memberForm);
-    }
+    @PostMapping("save")
+    public String saveOne(@Validated MemberForm memberForm, BindingResult bindingResult,
+                            Model model, RedirectAttributes redirectAttributes) {
 
+        Integer idCheck = memberForm.getId();
+        boolean idExists = false;
+        if (idCheck != null) {
+            idExists = service.existsById(idCheck);
+        }
+        if(100<=service.count() && !idExists){
+            //使い方が・・・？
+            ObjectError countErr = new ObjectError("countErr","登録数が上限数に達しています。〈１００件）");
+            model.addAttribute("countErr", "登録数が上限数に達しています。〈１００件）");
+            bindingResult.addError(countErr);
+        }
+
+        if(!bindingResult.hasErrors()){
+
+            Member member = new Member();
+            if (idCheck != null) {
+                member.setId(memberForm.getId());
+            }
+            member.setName(memberForm.getName());
+            member.setGender(memberForm.getGender());
+            member.setBirthdate(memberForm.getBirthdate());
+            member.setPhonenumber(memberForm.getPhonenumber());
+            member.setEmail(memberForm.getEmail());
+            member.setNationality(memberForm.getNationality());
+            service.saveMember(member);
+            return "redirect:/member";
+        }
+        if (idCheck == null) {
+                model.addAttribute("title", "登録");
+                model.addAttribute("buttonName", "登録");
+        }else{
+                model.addAttribute("title", "更新");
+                model.addAttribute("buttonName", "更新");
+        }
+        return "memberList/memberEdit";
+    }
 }

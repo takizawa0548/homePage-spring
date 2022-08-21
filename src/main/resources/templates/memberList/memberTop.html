@@ -13,7 +13,6 @@
         <div class="w-75 mt-5 mx-auto text-end">
             <form method="post" th:action="@{/member/edit}">
                 <input class="btn btn-primary btn-lg" type="button" onClick="submit();" value="新規登録">
-                <input type="hidden" name="id" value="0">
             </form>
         </div>
         <div class="table-responsive">
@@ -33,20 +32,20 @@
                 </thead>
                 <tbody>
                     <tr th:each="obj : ${list}">
-                        <th scope="row" th:text="${obj.id}"></th>
-                        <td th:text="${obj.name}"></td>
-                        <td th:text="${obj.sex}"></td>
-                        <td th:text="${obj.birthdate}"></td>
-                        <td th:text="${obj.phonenumber}"></td>
-                        <td th:text="${obj.email}"></td>
-                        <td th:text="${obj.nationality}"></td>
-                        <td>
+                        <th class="align-middle" scope="row" th:text="${obj.id}"></th>
+                        <td class="align-middle" th:text="${obj.name}"></td>
+                        <td class="align-middle" th:text="${obj.gender}"></td>
+                        <td class="align-middle" th:text="${#dates.format(obj.birthdate,'YYYY/MM/dd')}"></td>
+                        <td class="align-middle" th:text="${obj.phonenumber}"></td>
+                        <td class="align-middle" th:text="${obj.email}"></td>
+                        <td class="align-middle" th:text="${obj.nationality}"></td>
+                        <td class="align-middle" >
                             <form method="post" th:action="@{/member/edit}">
                                 <input class="btn btn-outline-primary" type="button" onClick="submit();" value="更新">
                                 <input type="hidden" name="id" th:value="${obj.id}">
                             </form>
                         </td>
-                        <td>
+                        <td class="align-middle" >
                             <form method="post" th:action="@{/member/delete}">
                                 <input class="btn btn-outline-danger" type="button" onClick="submit();" value="削除">
                                 <input type="hidden" name="id" th:value="${obj.id}">

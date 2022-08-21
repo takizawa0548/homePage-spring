@@ -8,52 +8,60 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
 </head>
 <body>
-<div layout:fragment="content">
+<div layout:fragment="content" >
     <h2 class="mt-5 text-center">メンバー[[${title}]]</h2>
-    <form class="w-75 mt-5 mx-auto" th:object="${memberForm}">
+    <form class="w-75 mt-5 mx-auto" th:object="${memberForm}" method="post" th:action="@{/member/save}">
         <div class="container border border-2 rounded">
-            <div class="offset-md-1 col-md-4 mb-3">
-                <p class="text-start mt-5 fw-bold" id="formControlInput1">id：[[${id}]]</p>
+            <div class="offset-md-1 col-md-5 mb-3 mt-5 ">
+                <div th:if="${countErr}" th:text="${countErr}" style="color:red;"></div>
+                <p class="text-start fw-bold" id="formControlInput1" >id：[[${memberForm.id}!=null?${memberForm.id}:'-']]</p>
+                <input type="hidden" th:field="*{id}">
             </div>
             <div class="row">
                 <div class="offset-md-1 col-md-4 mb-3">
                     <label for="formControlInput2" class="form-label fw-bold">名前</label>
-                    <input type="text" class="form-control" id="formControlInput2" th:field="*{name}" placeholder="○○太郎">
+                    <input type="text" name="name" class="form-control" id="formControlInput2" th:field="*{name}" placeholder="○○太郎">
+                    <div th:if="${#fields.hasErrors('name')}" th:errors="*{name}" style="color:red;"></div>
                 </div>
                 <div class="offset-md-1 col-md-3 mb-3">
                     <label for="formControlInput3" class="form-label fw-bold">性別</label>
-                    <select class="form-select" aria-label="Default select example"  id="formControlInput3" >
-                        <option selected>Open this select menu</option>
-                        <option value="男">男性</option>
-                        <option value="女">女性</option>
+                    <select name="gender" class="form-select" aria-label="Default select example"  id="formControlInput3">
+                        <option value="">Open this select gender</option>
+                        <option th:selected="${memberForm.gender == '男性'}" value="男性">男性</option>
+                        <option th:selected="${memberForm.gender == '女性'}" value="女性">女性</option>
                     </select>
+                    <div th:if="${#fields.hasErrors('gender')}" th:errors="*{gender}" style="color:red;"></div>
                 </div>
             </div>
             <div class="row">
                 <div class="offset-md-1 col-md-4 mb-3">
                     <label for="formControlInput4" class="form-label fw-bold">誕生日</label>
-                    <input type="date" class="form-control" th:field="*{birthdate}" id="formControlInput4">
+                    <input name="birthdate" type="date" class="form-control" th:value="${#dates.format(memberForm.birthdate,'yyyy-MM-dd')}"  id="formControlInput4" >
+                    <div th:if="${#fields.hasErrors('birthdate')}" th:errors="*{birthdate}" style="color:red;"></div>
                 </div>
             </div>
             <div class="row">
                 <div class="offset-md-1 col-md-4 mb-3">
                     <label for="formControlInput5" class="form-label fw-bold">電話番号</label>
-                    <input type="tel" class="form-control" th:field="*{phonenumber}" id="formControlInput5" placeholder="XXXX-XX-XXXX">
+                    <input name="phonenumber" type="tel" class="form-control" th:field="*{phonenumber}" id="formControlInput5" placeholder="XXXX-XX-XXXX">
+                    <div th:if="${#fields.hasErrors('phonenumber')}" th:errors="*{phonenumber}" style="color:red;"></div>
                 </div>
                 <div class="offset-md-1 col-md-4 mb-3">
                     <label for="formControlInput6" class="form-label fw-bold">Eメール</label>
-                    <input type="email" class="form-control" th:field="*{email}"  id="formControlInput6" placeholder="name@example.com">
+                    <input name="email" type="email" class="form-control" th:field="*{email}"  id="formControlInput6" placeholder="name@example.com">
+                    <div th:if="${#fields.hasErrors('email')}" th:errors="*{email}" style="color:red;"></div>
                 </div>
             </div>
             <div class="row">
                 <div class="offset-md-1 col-md-3 mb-3">
                     <label for="formControlInput7" class="form-label fw-bold">国籍</label>
-                    <input type="text" class="form-control" th:field="*{nationality}"  id="formControlInput7" placeholder="日本">
+                    <input name="nationality" type="text" class="form-control" th:field="*{nationality}"  id="formControlInput7" placeholder="日本">
+                    <div th:if="${#fields.hasErrors('nationality')}" th:errors="*{nationality}" style="color:red;"></div>
                 </div>
             </div>
             <div class="row">
                 <div class="offset-md-9 col-md-3 mb-3">
-                    <input class="btn btn-primary btn-lg mb-5 mx-auto text-end" type="button" onClick="" th:value="|${title}実行|" >
+                    <input class="btn btn-primary btn-lg mb-5 mx-auto text-end" type="button" onClick="submit();" th:value="|${title}実行|" >
                 </div>
             </div>
         </div>
