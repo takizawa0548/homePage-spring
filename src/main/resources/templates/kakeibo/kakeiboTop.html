@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="ja" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{menuBar}">
+<head>
+    <meta charset="UTF-8">
+    <title>takisa | java | 家計簿システム</title>
+    <meta name="description" content="入力情報の分類、計算のできるWebシステム">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    <script type="text/javascript">
+    <!--
+        function confirmedMessage(){
+            if(window.confirm('削除します。よろしいですか？')){
+                return true;
+            }else{
+                return false;
+            }
+        }
+    //-->
+    </script>
+</head>
+<body>
+    <div layout:fragment="content">
+        <h2 class="mt-5 text-center">家計簿システム</h2>
+        <div th:if="${registerMsg != null}" th:classappend="${(registerMsg == '登録'? 'alert-success' : '') + (registerMsg == '更新' ? 'alert-warning' : '') + (registerMsg == '削除' ? 'alert-danger' : '')}" class="w-75 mt-5 mx-auto alert alert-dismissible fade show" role="alert">
+            <strong>[[${registerMsg}]]が完了しました！</strong> 【家計簿ID:[[${registerName}]]】
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+        <div class="w-75 mt-5 mx-auto">
+            <form class="row g-2 justify-content-end" method="post" th:object="${kakeiboForm}"  th:action="@{/kakeibo/save}">
+                <div class="col-auto w-50">
+                    <input th:field="*{kakeibo_id}" type="text" class="form-control" name="kakeibo_id" placeholder="初めての方はIDを登録してください。">
+                    <div th:if="${#fields.hasErrors('kakeibo_id')}" th:errors="*{kakeibo_id}" style="color:red;"></div>
+                    <div th:if="${countErr}" th:text="${countErr}" style="color:red;"></div>
+                    <div th:if="${existsErr}" th:text="${existsErr}" style="color:red;"></div>
+                </div>
+                <div class="col-auto">
+                    <input class="btn btn-warning" type="button" onClick="submit();" value="ID登録">
+                </div>
+            </form>
+        </div>
+        <div class="table-responsive">
+            <table th:unless="${#lists.isEmpty(list)}" class="w-75 table table-light table-striped table-bordered mt-5 mx-auto text-center">
+                <thead class="table-primary">
+                    <tr class="text-nowrap">
+                        <th scope="col" colspan="2">家計簿ID一覧</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr th:each="obj : ${list}">
+                        <th class="align-middle" scope="row" >
+                            <form method="post" th:action="@{/kakeibo/Result}">
+                                <input class="btn btn-link" type="button" onClick="submit();" th:value="${obj.kakeibo_id}">
+                                <input type="hidden" name="kakeibo_id" th:value="${obj.kakeibo_id}">
+                            </form>
+                        </th>
+                        <td class="align-middle w-25" >
+                            <form method="post" th:action="@{/kakeibo/delete}" onsubmit="return confirmedMessage();">
+                                <input class="btn btn-outline-danger" type="submit" value="削除">
+                                <input type="hidden" name="kakeibo_id" th:value="${obj.kakeibo_id}">
+                            </form>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
+
+</body>
+</html>

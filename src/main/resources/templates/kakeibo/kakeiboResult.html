@@ -1,0 +1,106 @@
+<!doctype html>
+<html lang="ja" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{menuBar}">
+<head>
+    <meta charset="UTF-8">
+    <title>takisa | java | 家計簿システム</title>
+    <meta name="description" content="入力情報の分類、計算のできるWebシステム">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+</head>
+<body>
+<div layout:fragment="content">
+    <h2 class="mt-5 text-center">家計簿実績</h2>
+    <div th:if="${registerMsg != null}" th:classappend="${(registerMsg == '登録'? 'alert-success' : '') + (registerMsg == '更新' ? 'alert-warning' : '') + (registerMsg == '削除' ? 'alert-danger' : '')}" class="w-75 mt-5 mx-auto alert alert-dismissible fade show" role="alert">
+        <strong>[[${registerMsg}]]が完了しました！</strong> 【項目名:[[${registerName}]]】
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+    <hr class="w-75 mx-auto mt-3">
+    <div class="w-75 mx-auto mt-2">
+        <form class="row g-3" th:object="${kakeiboYosanForm}" method="post" th:action="@{/kakeibo/saveYosan}">
+            <div class="col-md-1"></div>
+            <div class="col-md-4">
+                <label for="formControlInput4" class="form-label fw-bold">項目名</label>
+                <input type="text" class="form-control" name="kakeibo_koumoku" th:value="*{kakeibo_koumoku}" placeholder="項目名">
+                <div th:if="${#fields.hasErrors('kakeibo_koumoku')}" th:errors="*{kakeibo_koumoku}" style="color:red;"></div>
+            </div>
+            <div class="col-md-4">
+                <label for="formControlInput4" class="form-label fw-bold">金額</label>
+                <input type="text" class="form-control" name="kakeibo_yosan_kingaku" th:value="*{kakeibo_yosan_kingaku}" placeholder="円単位">
+                <div th:if="${#fields.hasErrors('kakeibo_yosan_kingaku')}" th:errors="*{kakeibo_yosan_kingaku}" style="color:red;"></div>
+            </div>
+            <div class="col-md-3 align-self-end">
+                <input class="btn btn-warning w-100" type="button" onClick="submit();"  value="予算追加">
+            </div>
+            <input type="hidden" name="kakeibo_id" th:value="${kakeibo_id}">
+        </form>
+    </div>
+    <hr class="w-75 mx-auto mt-3">
+    <div class="w-75 mx-auto mt-1">
+        <form class="row g-3" th:object="${kakeiboResultForm}" method="post" th:action="@{/kakeibo/saveResult}">
+            <div class="col-md-1"></div>
+            <div class="col-md-3">
+                <label for="formControlInput4" class="form-label fw-bold">実績日</label>
+                <input name="kakeibo_date" th:value="${#dates.format(kakeiboResultForm.kakeibo_date,'yyyy-MM-dd')}"  type="date" class="form-control"  id="formControlInput4" >
+                <div th:if="${#fields.hasErrors('kakeibo_date')}" th:errors="*{kakeibo_date}" style="color:red;"></div>
+            </div>
+            <div class="col-md-3">
+                <label for="formControlInput3" class="form-label fw-bold">項目名</label>
+                <select name="kakeibo_koumoku" class="form-select" aria-label="Default select example"  id="formControlInput3">
+                    <option value="">項目名を選択</option>
+                    <div th:unless="${#lists.isEmpty(list)}" th:each="objKoumoku : ${list}">
+                        <option th:value="${objKoumoku.kakeibo_koumoku}" th:text="${objKoumoku.kakeibo_koumoku}"></option>
+                        </div>
+                </select>
+                <div th:if="${#fields.hasErrors('kakeibo_koumoku')}" th:errors="*{kakeibo_koumoku}" style="color:red;"></div>
+            </div>
+            <div class="col-md-3">
+                <label for="formControlInput4" class="form-label fw-bold">金額</label>
+                <input type="text" class="form-control" name="kakeibo_zisseki_kingaku" th:value="*{kakeibo_zisseki_kingaku}" placeholder="円単位">
+                <div th:if="${#fields.hasErrors('kakeibo_zisseki_kingaku')}" th:errors="*{kakeibo_zisseki_kingaku}" style="color:red;"></div>
+            </div>
+            <div class="col-md-2 align-self-end">
+                <input class="btn btn-warning w-100" type="button" onClick="submit();"  value="実績入力">
+            </div>
+            <input type="hidden" name="kakeibo_id" th:value="${kakeibo_id}">
+        </form>
+    </div>
+    <hr class="w-75 mx-auto mt-3">
+    <div class="row g-2 mt-2 w-75 mx-auto">
+        <form class="col-auto">
+            <input class="btn btn-light" type="button" onClick="return false;" value="予算編集">
+        </form>
+        <form class="col-auto">
+            <input class="btn btn-light" type="button" onClick="return false;" value="実績詳細編集">
+        </form>
+    </div>
+    <div class="table-responsive">
+        <table th:unless="${#lists.isEmpty(list)}" class="w-75 table table-light table-striped table-bordered mt-2 mx-auto text-center">
+            <thead class="table-primary">
+            <tr class="text-nowrap">
+                <th scope="col" >項目</th>
+                <th scope="col" >予算</th>
+                <th scope="col" >実績</th>
+                <th scope="col" >差額</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="obj : ${list}">
+                <th class="align-middle" scope="row" th:text="${obj.kakeibo_koumoku}"></th>
+                <td class="align-middle" th:text="${obj.kakeibo_yosan_kingaku}" ></td>
+                <td class="align-middle" th:text="${obj.kakeibo_zisseki_kingaku}" ></td>
+                <td class="align-middle" th:text="${obj.kakeibo_sagaku_kingaku}" ></td>
+            </tr>
+            <tr>
+                <th class="table-primary" scope="row">合計</th>
+                <td class="align-middle" th:text="${yosanGoukei}"></td>
+                <td class="align-middle" th:text="${zissekiGoukei}"></td>
+                <td class="align-middle" th:text="${sagakugoukei}"></td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
+
+</body>
+</html>

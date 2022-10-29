@@ -1,20 +1,17 @@
 package com.example.takisahp;
 
-import com.example.takisahp.entry.Member;
-import com.example.takisahp.entry.MemberForm;
-import com.example.takisahp.entry.MemberService;
+import com.example.takisahp.entry.*;
+import com.example.takisahp.kakeibo.KakeiboForm;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.ObjectError;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import java.util.Collection;
 import java.util.Optional;
 
 @Controller
@@ -24,17 +21,42 @@ public class MemberListController {
     @Autowired
     MemberService service;
 
-    @GetMapping
-    public String showList(Member member, Model model) {
-        Iterable<Member> list = service.selectAll();
-        model.addAttribute("list", list);
-        return "memberList/memberTop";
+    @ModelAttribute
+    public MemberForm setUpMemberForm(){
+        return new MemberForm();
+    }
+    @ModelAttribute
+    public MemberTopForm setUpMemberTopForm(){
+        return new MemberTopForm();
     }
 
+    @GetMapping
+    public String showList(Model model) {
+        Iterable<Member> list = service.selectAll();
+        model.addAttribute("list", list);
+        Collection<MenberName> distinctNameList = service.selectDistinctOnlyNameTest();
+        model.addAttribute("distinctNameList", distinctNameList);
+        return "memberList/memberTop";
+    }
+    @PostMapping("search")
+    public String search(@Validated MemberTopForm memberTopForm, BindingResult bindingResult, Model model) {
+        Iterable<Member> list = null;
+        if(bindingResult.hasErrors()) {
+            list = service.selectAll();
+        }else{
+            list = service.selectName(memberTopForm.getSearchName());
+        }
+        model.addAttribute("list", list);
+        Collection<MenberName> distinctNameList = service.selectDistinctOnlyNameTest();
+        model.addAttribute("distinctNameList", distinctNameList);
+        return "memberList/memberTop";
+    }
     @PostMapping("delete")
-    public String deleteOne(@RequestParam("id") Integer id, Model model, RedirectAttributes redirectAttributes) {
+    public String deleteOne(@RequestParam("id") Integer id, @RequestParam("name") String name,RedirectAttributes redirectAttributes) {
 
         service.deleteMember(id);
+        redirectAttributes.addFlashAttribute("registerMsg", "削除");
+        redirectAttributes.addFlashAttribute("registerName", name);
         return "redirect:/member";
     }
 
@@ -84,33 +106,40 @@ public class MemberListController {
         }
         if(100<=service.count() && !idExists){
             //使い方が・・・？
-            ObjectError countErr = new ObjectError("countErr","登録数が上限数に達しています。〈１００件）");
-            model.addAttribute("countErr", "登録数が上限数に達しています。〈１００件）");
+            ObjectError countErr = new ObjectError("countErr","登録数が上限数に達しています。（１００件）");
+            model.addAttribute("countErr", "登録数が上限数に達しています。（１００件）");
             bindingResult.addError(countErr);
         }
 
-        if(!bindingResult.hasErrors()){
-
-            Member member = new Member();
-            if (idCheck != null) {
-                member.setId(memberForm.getId());
-            }
-            member.setName(memberForm.getName());
-            member.setGender(memberForm.getGender());
-            member.setBirthdate(memberForm.getBirthdate());
-            member.setPhonenumber(memberForm.getPhonenumber());
-            member.setEmail(memberForm.getEmail());
-            member.setNationality(memberForm.getNationality());
-            service.saveMember(member);
-            return "redirect:/member";
-        }
-        if (idCheck == null) {
+        if(bindingResult.hasErrors()){
+            if (idCheck == null) {
                 model.addAttribute("title", "登録");
                 model.addAttribute("buttonName", "登録");
-        }else{
+            }else{
                 model.addAttribute("title", "更新");
                 model.addAttribute("buttonName", "更新");
+            }
+            return "memberList/memberEdit";
         }
-        return "memberList/memberEdit";
+
+        Member member = new Member();
+        if (idCheck != null) {
+            member.setId(memberForm.getId());
+        }
+        member.setName(memberForm.getName());
+        member.setGender(memberForm.getGender());
+        member.setBirthdate(memberForm.getBirthdate());
+        member.setPhonenumber(memberForm.getPhonenumber());
+        member.setEmail(memberForm.getEmail());
+        member.setNationality(memberForm.getNationality());
+        service.saveMember(member);
+        if (idCheck != null) {
+            redirectAttributes.addFlashAttribute("registerMsg", "更新");
+        }else{
+            redirectAttributes.addFlashAttribute("registerMsg", "登録");
+        }
+        redirectAttributes.addFlashAttribute("registerName", memberForm.getName());
+        return "redirect:/member";
+
     }
 }

@@ -11,41 +11,31 @@
     <div layout:fragment="content">
         <div class="row row-cols-1 row-cols-md-3 g-4 w-75 mx-auto">
             <div class="col">
-                <div class="card">
-                    <img th:src="@{/img/memberIntroduction.jpg}" height="180" class="card-img-top border-bottom" alt="Image Cap">
+                <div class="card h-100" >
+                    <img th:src="@{/img/memberIntroduction.jpg}" class="card-img-top border-bottom h-50" alt="Image Cap">
                     <div class="card-body">
-                        <h5 class="card-title">メンバー表</h5>
-                        <p class="card-text">検索・登録・更新・削除をもった基本的なWebシステム</p>
+                        <h5 class="card-title">メンバー管理システム</h5>
+                        <p class="card-text">検索・登録・更新・削除をもったWebシステム</p>
                         <a class="btn btn-primary" th:href="@{/member}" role="button">Link</a>
                     </div>
                 </div>
             </div>
             <div class="col">
-                <div class="card">
-                    <svg class="bd-placeholder-img card-img-top" width="100%" height="180" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice" focusable="false" role="img" aria-label="Placeholder: Image cap"><title>Placeholder</title><rect fill="#868e96" width="100%" height="100%"/><text fill="#dee2e6" dy=".3em" x="50%" y="50%">Image cap</text></svg>
+                <div class="card h-100" >
+                    <svg class="bd-placeholder-img card-img-top h-50"  xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice" focusable="false" role="img" aria-label="Placeholder: Image cap"><title>Placeholder</title><rect fill="#868e96" width="100%" height="100%"/><text fill="#dee2e6" dy=".3em" x="50%" y="50%">Image cap</text></svg>
                     <div class="card-body">
-                        <h5 class="card-title">家計簿Webシステム（予定）</h5>
-                        <p class="card-text">ログイン機能、セッション保持、計算、グラフ、分類分けをもったWebシステム</p>
-                        <a class="btn btn-primary" href="#" role="button">未実装</a>
+                        <h5 class="card-title">家計簿システム（実装中）</h5>
+                        <p class="card-text">入力情報の分類、計算のできるWebシステム</p>
+                        <a class="btn btn-primary" th:href="@{/kakeibo}" role="button">Link</a>
                     </div>
                 </div>
             </div>
             <div class="col">
-                <div class="card">
-                    <svg class="bd-placeholder-img card-img-top" width="100%" height="180" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice" focusable="false" role="img" aria-label="Placeholder: Image cap"><title>Placeholder</title><rect fill="#868e96" width="100%" height="100%"/><text fill="#dee2e6" dy=".3em" x="50%" y="50%">Image cap</text></svg>
+                <div class="card h-100">
+                    <svg class="bd-placeholder-img card-img-top h-50" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice" focusable="false" role="img" aria-label="Placeholder: Image cap"><title>Placeholder</title><rect fill="#868e96" width="100%" height="100%"/><text fill="#dee2e6" dy=".3em" x="50%" y="50%">Image cap</text></svg>
                     <div class="card-body">
                         <h5 class="card-title">やることリスト（予定）</h5>
-                        <p class="card-text">ログイン機能、動的な要素の入れ替え、カレンダー機能をもったWebシステム</p>
-                        <a class="btn btn-primary" href="#" role="button">未実装</a>
-                    </div>
-                </div>
-            </div>
-            <div class="col">
-                <div class="card">
-                    <svg class="bd-placeholder-img card-img-top" width="100%" height="180" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice" focusable="false" role="img" aria-label="Placeholder: Image cap"><title>Placeholder</title><rect fill="#868e96" width="100%" height="100%"/><text fill="#dee2e6" dy=".3em" x="50%" y="50%">Image cap</text></svg>
-                    <div class="card-body">
-                        <h5 class="card-title">フロントエンドのデザイン集</h5>
-                        <p class="card-text">デザインを学ぶための学習ページ</p>
+                        <p class="card-text">動的な要素の入れ替えができるWebシステム</p>
                         <a class="btn btn-primary" href="#" role="button">未実装</a>
                     </div>
                 </div>

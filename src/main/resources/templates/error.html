@@ -1,0 +1,24 @@
+<!doctype html>
+<html lang="ja" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{menuBar}">
+<head>
+    <meta charset="UTF-8">
+    <title>takisa | java | [[${error}]]</title>
+    <meta name="description" content="エラー画面">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+</head>
+<body>
+    <div layout:fragment="content" >
+        <div class="w-75 mt-5 mx-auto text-center">
+            <!-- エラー内容を表示 -->
+            <h1 th:text="${status} + ' ' + ${error}"></h1>
+            <p th:text="${message}"></p>
+            <p>TOP画面に戻ってください</p>
+            <form method="get" th:action="@{/}">
+                <button class="btn btn-link" type="submit">TOP画面に戻る</button>
+            </form>
+        </div>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
+</body>
+</html>

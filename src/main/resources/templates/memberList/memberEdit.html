@@ -14,16 +14,18 @@
         <div class="container border border-2 rounded">
             <div class="offset-md-1 col-md-5 mb-3 mt-5 ">
                 <div th:if="${countErr}" th:text="${countErr}" style="color:red;"></div>
-                <p class="text-start fw-bold" id="formControlInput1" >id：[[${memberForm.id}!=null?${memberForm.id}:'-']]</p>
-                <input type="hidden" th:field="*{id}">
+                <p class="text-start fw-bold" id="formControlInput1" >ID：[[${memberForm.id}!=null?${memberForm.id}:'-']]</p>
+                <div th:if="${memberForm.id != null}">
+                    <input type="hidden" th:field="*{id}">
+                </div>
             </div>
             <div class="row">
                 <div class="offset-md-1 col-md-4 mb-3">
-                    <label for="formControlInput2" class="form-label fw-bold">名前</label>
-                    <input type="text" name="name" class="form-control" id="formControlInput2" th:field="*{name}" placeholder="○○太郎">
+                    <label for="test" class="form-label fw-bold">名前</label>
+                    <input type="text" name="name" class="form-control" th:field="*{name}" placeholder="○○太郎" id="test">
                     <div th:if="${#fields.hasErrors('name')}" th:errors="*{name}" style="color:red;"></div>
                 </div>
-                <div class="offset-md-1 col-md-3 mb-3">
+                <div class="offset-md-1 col-md-4 mb-3">
                     <label for="formControlInput3" class="form-label fw-bold">性別</label>
                     <select name="gender" class="form-select" aria-label="Default select example"  id="formControlInput3">
                         <option value="">Open this select gender</option>
@@ -60,8 +62,8 @@
                 </div>
             </div>
             <div class="row">
-                <div class="offset-md-9 col-md-3 mb-3">
-                    <input class="btn btn-primary btn-lg mb-5 mx-auto text-end" type="button" onClick="submit();" th:value="|${title}実行|" >
+                <div class="offset-md-8 col-md-3 mb-3 text-end">
+                    <input class="btn btn-primary btn-lg mb-5 mx-auto" type="button" onClick="submit();" th:value="|${title}実行|" >
                 </div>
             </div>
         </div>

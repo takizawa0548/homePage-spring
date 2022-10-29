@@ -5,8 +5,10 @@ import org.springframework.context.annotation.Primary;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import com.example.takisahp.entry.MemberRepository;
 
+import javax.persistence.EntityManager;
+import java.util.Collection;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -17,11 +19,25 @@ public class MemberServiceImpl implements MemberService{
     @Autowired
     private MemberRepository repository;
 
+    @Autowired
+    EntityManager manager;
+
     @Override
     public Iterable<Member> selectAll() {
         return repository.findAll(Sort.by(Sort.Direction.ASC, "id"));
     }
 
+    @Override
+    public Iterable<Member> selectName(String name) {
+        String sql = "SELECT * FROM member where name like :name ORDER BY id ASC";
+        List<Member> results = manager.createNativeQuery(sql, Member.class)
+                .setParameter("name","%"+name+"%").getResultList();
+        return results;
+    }
+    @Override
+    public Collection<MenberName> selectDistinctOnlyNameTest(){
+        return  repository.selectDistinctOnlyName();
+    };
     @Override
     public Optional<Member> selectOneById(Integer id) {
         return repository.findById(id);
